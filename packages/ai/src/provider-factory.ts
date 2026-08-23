@@ -8,8 +8,8 @@ import { GeminiProvider } from "./providers/gemini.provider.js";
  * No code changes needed to switch providers — only .env.
  */
 export function createAIProvider(): AIProvider {
-  const provider = process.env.AI_PROVIDER ?? "anthropic";
-  const model = process.env.AI_MODEL ?? "claude-sonnet-4-6";
+  const provider = process.env.AI_PROVIDER ?? "gemini";
+  const model = process.env.AI_MODEL ?? "gemini-3.5-flash";
 
   switch (provider) {
     case "anthropic":

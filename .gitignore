@@ -1,0 +1,20 @@
+node_modules/
+dist/
+.next/
+out/
+build/
+
+.env
+.env.local
+.env.*.local
+
+*.log
+npm-debug.log*
+
+.DS_Store
+
+# Drizzle migration lock is fine to commit, but local db files are not
+*.sqlite
+
+.vscode/
+.idea/

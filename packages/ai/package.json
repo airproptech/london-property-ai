@@ -1,0 +1,21 @@
+{
+  "name": "@lpai/ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lpai/database": "0.1.0",
+    "@lpai/shared": "0.1.0",
+    "@lpai/property-matching": "0.1.0",
+    "@anthropic-ai/sdk": "^0.27.0",
+    "drizzle-orm": "^0.45.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

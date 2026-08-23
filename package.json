@@ -1,0 +1,31 @@
+{
+  "name": "london-property-ai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI lead-generation, qualification, property-matching and follow-up platform for London leasehold properties.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:worker": "npm run dev --workspace=apps/worker",
+    "build": "npm run build --workspace=packages/shared && npm run build --workspace=packages/database && npm run build --workspace=packages/lead-scoring && npm run build --workspace=packages/property-matching && npm run build --workspace=packages/communications && npm run build --workspace=packages/ai && npm run build --workspace=apps/api && npm run build --workspace=apps/worker && npm run build --workspace=apps/dashboard",
+    "db:generate": "npm run generate --workspace=packages/database",
+    "db:migrate": "npm run migrate --workspace=packages/database",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.10",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.16.2",
+    "drizzle-orm": "^0.45.2"
+  }
+}

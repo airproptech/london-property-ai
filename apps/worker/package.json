@@ -1,0 +1,29 @@
+{
+  "name": "@lpai/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@lpai/database": "0.1.0",
+    "@lpai/shared": "0.1.0",
+    "@lpai/ai": "0.1.0",
+    "@lpai/lead-scoring": "0.1.0",
+    "@lpai/property-matching": "0.1.0",
+    "@lpai/communications": "0.1.0",
+    "bullmq": "^5.10.4",
+    "ioredis": "^5.4.1",
+    "drizzle-orm": "^0.45.2",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "tsx": "^4.16.2",
+    "@types/node": "^20.14.10"
+  }
+}

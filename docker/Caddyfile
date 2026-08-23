@@ -1,0 +1,10 @@
+# Replace these with your real subdomains once DNS is pointed at this VPS.
+# Caddy will automatically obtain and renew HTTPS certificates via Let's Encrypt.
+
+api.yourdomain.com {
+    reverse_proxy api:4000
+}
+
+app.yourdomain.com {
+    reverse_proxy dashboard:3000
+}

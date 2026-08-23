@@ -1,0 +1,116 @@
+name: london-property-ai
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lpai_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - lpai_postgres_data:/var/lib/postgresql/data
+    networks:
+      - lpai_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # No external port published by default — only reachable inside lpai_network.
+    # Uncomment below only for local debugging, never in production:
+    # ports:
+    #   - "127.0.0.1:5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: lpai_redis
+    restart: unless-stopped
+    volumes:
+      - lpai_redis_data:/data
+    networks:
+      - lpai_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: lpai_api
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lpai_network
+    expose:
+      - "4000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    container_name: lpai_worker
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lpai_network
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/dashboard.Dockerfile
+    container_name: lpai_dashboard
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - api
+    networks:
+      - lpai_network
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: lpai_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile
+      - lpai_caddy_data:/data
+      - lpai_caddy_config:/config
+    depends_on:
+      - api
+      - dashboard
+    networks:
+      - lpai_network
+
+networks:
+  lpai_network:
+    name: lpai_network
+    driver: bridge
+
+volumes:
+  lpai_postgres_data:
+    name: lpai_postgres_data
+  lpai_redis_data:
+    name: lpai_redis_data
+  lpai_caddy_data:
+    name: lpai_caddy_data
+  lpai_caddy_config:
+    name: lpai_caddy_config

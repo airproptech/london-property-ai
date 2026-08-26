@@ -21,7 +21,6 @@ services:
     # No external port published by default — only reachable inside lpai_network.
     # Uncomment below only for local debugging, never in production:
     # ports:
-    #   - "127.0.0.1:5432:5432"
 
   redis:
     image: redis:7-alpine
@@ -68,6 +67,11 @@ services:
         condition: service_healthy
     networks:
       - lpai_network
+    volumes:
+      # Baileys WhatsApp session state — persists across restarts so the
+      # linked device doesn't need re-scanning every time the container
+      # restarts. Losing this volume means re-linking via QR code.
+      - lpai_whatsapp_auth:/app/auth_info
 
   dashboard:
     build:
@@ -114,3 +118,5 @@ volumes:
     name: lpai_caddy_data
   lpai_caddy_config:
     name: lpai_caddy_config
+  lpai_whatsapp_auth:
+    name: lpai_whatsapp_auth

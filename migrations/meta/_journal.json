@@ -8,6 +8,20 @@
       "when": 1787464307582,
       "tag": "0000_bumpy_vengeance",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787526387935,
+      "tag": "0001_classy_mysterio",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787683895473,
+      "tag": "0002_zippy_groot",
+      "breakpoints": true
     }
   ]
 }

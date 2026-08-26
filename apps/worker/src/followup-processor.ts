@@ -1,19 +1,39 @@
 import { eq, and, lte, isNull, or } from "drizzle-orm";
 import { getDb, schema } from "@lpai/database";
-import { CommunicationService, EmailAdapter, WhatsAppAdapter } from "@lpai/communications";
+import { CommunicationService, createEmailProvider } from "@lpai/communications";
+import type { CommunicationAdapter, SendMessageInput, SendMessageResult } from "@lpai/communications";
+import { BaileysWhatsAppAdapter } from "./whatsapp/baileys-adapter.js";
 import { checkCompliance } from "./compliance.js";
 
+/**
+ * Thin adapter bridging the EmailProvider interface (richer, tracking-aware)
+ * onto the simpler CommunicationAdapter interface the follow-up processor
+ * and AI agent tools expect. Real tracking (opens/clicks/campaign
+ * attribution) happens through the dedicated email_events pipeline in
+ * Phase 11 — this bridge covers plain one-off sends like follow-ups.
+ */
+class EmailAdapterBridge implements CommunicationAdapter {
+  readonly channel = "email" as const;
+  constructor(private readonly provider: ReturnType<typeof createEmailProvider>) {}
+
+  async send(input: SendMessageInput): Promise<SendMessageResult> {
+    const result = await this.provider.send({
+      to: input.to,
+      subject: input.subject ?? "Message from London Property AI",
+      html: input.body,
+      text: input.body,
+    });
+    return { providerMessageId: result.providerMessageId, raw: result.raw };
+  }
+
+  verifyWebhookSignature(rawBody: string | Buffer, headers: Record<string, string>): boolean {
+    return this.provider.verifyWebhookSignature(rawBody, headers);
+  }
+}
+
 const communicationService = new CommunicationService();
-communicationService.register(
-  new EmailAdapter(process.env.RESEND_API_KEY ?? "", process.env.EMAIL_FROM_ADDRESS ?? "")
-);
-communicationService.register(
-  new WhatsAppAdapter(
-    process.env.WHATSAPP_PHONE_NUMBER_ID ?? "",
-    process.env.WHATSAPP_ACCESS_TOKEN ?? "",
-    process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? ""
-  )
-);
+communicationService.register(new EmailAdapterBridge(createEmailProvider()));
+communicationService.register(new BaileysWhatsAppAdapter());
 
 /**
  * Finds every follow-up due now, runs it through the compliance gate,

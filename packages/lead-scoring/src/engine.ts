@@ -73,6 +73,12 @@ function humanizeSignal(signal: ScoringSignal, delta: number): string {
     requestedViewingOrAppointment: "requested viewing/appointment",
     engagedWithTwoPlusFollowups: "engaged with 2+ follow-ups",
     noResponseToTwoPlusFollowups: "no response to 2+ follow-ups",
+    emailOpened: "email opened",
+    propertyLinkClicked: "property link clicked",
+    multiplePropertyClicks: "multiple property clicks (3+)",
+    leadFormSubmitted: "lead form submitted",
+    whatsappOptIn: "WhatsApp opt-in",
+    viewingRequested: "viewing requested",
   };
   const sign = delta >= 0 ? "+" : "";
   return `${sign}${delta} ${labels[signal]}`;

@@ -13,7 +13,17 @@ export const SCORING_WEIGHTS = {
   requestedViewingOrAppointment: 10,
   engagedWithTwoPlusFollowups: 6,
   noResponseToTwoPlusFollowups: -10,
+  // Email marketing signals (Phase 10)
+  emailOpened: 1,
+  propertyLinkClicked: 5,
+  multiplePropertyClicks: 10, // 3+ clicks
+  leadFormSubmitted: 20,
+  whatsappOptIn: 20,
+  viewingRequested: 25,
 } as const;
+
+/** Score threshold at which a lead becomes eligible for the WhatsApp opt-in invitation email. */
+export const WHATSAPP_INVITE_SCORE_THRESHOLD = 40;
 
 export const SCORE_BANDS = {
   cold: { min: 0, max: 29 },

@@ -18,4 +18,5 @@ export const config = {
     minHoursBetweenMessages: parseInt(optional("FOLLOWUP_MIN_HOURS_BETWEEN_MESSAGES", "48"), 10),
   },
   pollIntervalMs: parseInt(optional("FOLLOWUP_POLL_INTERVAL_MS", "300000"), 10), // 5 min default
+  whatsappProvider: optional("WHATSAPP_PROVIDER", ""),
 };
